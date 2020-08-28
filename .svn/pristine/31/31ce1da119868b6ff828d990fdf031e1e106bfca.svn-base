@@ -1,0 +1,16 @@
+[2020-07-07T14:55:37.629539+00:00] EasyWeChat.DEBUG: >>>>>>>>
+GET /sns/jscode2session?access_token=35_dqpJh_W2RDyGEU9NKeoJAoRtZWIq90giv76xHxNuKr33v4GafqPsRXqSQoO0RJuumZaJjMFgexFYS9RRsP7Btl-Xwst_gto1APCT77UdXN3vIUcAcs5qkv3ZgiiH3ge-v9aiUxqJS5_bjFNYLWWjAEAUFF&appid=wx66bf55ed133e36e5&secret=8087bac5c2647d7b81c9c7d5af63f564&js_code=0611tkzI1kfoe30QecyI1kVmzI11tkzb&grant_type=authorization_code HTTP/1.1
+Host: api.weixin.qq.com
+User-Agent: GuzzleHttp/6.5.5 curl/7.64.0 PHP/7.2.19
+
+
+<<<<<<<<
+HTTP/1.1 200 OK
+Connection: keep-alive
+Content-Type: text/plain
+Date: Tue, 07 Jul 2020 14:55:37 GMT
+Content-Length: 82
+
+{"session_key":"3Jjkii7vwqVsWxX3yJNdBw==","openid":"o9z3V5PucDp6W_ejBx2G0BU27-OY"}
+--------
+NULL  
