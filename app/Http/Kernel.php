@@ -38,7 +38,7 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            'throttle:60,1',
+            'throttle:600,1',//'throttle:60,1',     //Laravel api 访问频率限制 429 Too many requests，第一个参数 60 代表每分钟限制 60 次请求，第二个参数 1 代表触发了限制规则，则1分钟内禁止访问
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\AcceptHeader::class,
         ],

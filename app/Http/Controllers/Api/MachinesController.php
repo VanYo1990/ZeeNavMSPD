@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\Machine;
+use Hash;
 
 class MachinesController extends Controller
 {
@@ -213,6 +214,53 @@ class MachinesController extends Controller
 
         return response()->json([
             'machines' => $machines,
+        ])->setStatusCode(201);
+    }
+
+    //机器登录
+    public function login(Request $request)
+    {
+        if (!$request->sn) {
+            return response()->json([
+                'resultCode' => 101,
+                'resultMessage' => 'error message: 设备编号不能为null',
+                'data' => []
+                ],
+                404);
+        }
+        
+        if (!$request->psw) {
+            return response()->json([
+                'resultCode' => 101,
+                'resultMessage' => 'error message: 密码不能为null',
+                'data' => []
+                ],
+                404);
+        }
+        
+        //判断用户输入的密码与数据库的密码是否一致
+        // 表单中的密码：$req->password   （原始）
+        // 数据库的密码：$user->password （哈希之后 ）
+        // laravel中 Hash::check(原始，哈希之后)判断是否一致
+        $sn = $request->sn;
+        $psw = \Hash::make($request->psw);
+        //$machines = DB::table('machines')->where('sn',$sn)->get();
+        $machine = Machine::where('sn', '=',  $sn)->first();
+        // if (Machine::where('sn', '=', $sn)->exists()) {
+        if (!Hash::check($request->psw , $machine['password'])){
+            //没有记录
+            return response()->json([
+                'resultCode' => 101,
+                'resultMessage' => 'error message: 登录失败，编号或密码错误',
+                'data' => []
+                ],
+                404);
+        }
+
+        return response()->json([
+            'resultCode' => 201,
+            'resultMessage' => 'success: 登录成功',
+            'data' => []
         ])->setStatusCode(201);
     }
     

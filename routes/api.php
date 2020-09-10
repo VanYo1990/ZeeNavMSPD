@@ -153,7 +153,13 @@ Route::prefix('v1')
                 // 管理员查询所有机器信息
                 Route::get('machines/all', 'MachinesController@queryMachinesAll')
                 ->name('machines.queryMachinesAll');
-
+                
+                //用户获取某设备的所有施工项目信息
+                Route::get('machineallprojects/{sn}', 'ProjectsController@getAllbysn')
+                ->name('machineallprojects');
+                //用户获取某施工项目详情信息
+                Route::get('projectdetails/{sn}/{id}', 'ProjectsController@getProjectdetails')
+                ->name('projectdetails');
                 
             });
         });
@@ -167,6 +173,15 @@ Route::prefix('v1')
         // 机器添加施工记录信息
         Route::post('wordrecord', 'WorkRecordsController@store')
         ->name('wordrecord.store');
+
+        // 机器登录
+        Route::post('machine_login', 'MachinesController@login')
+        ->name('machine.login');
+
+        // 添加记录信息
+        Route::post('datarecord', 'DataRecordsController@store')
+        ->name('datarecord.store');
+
 
     });
 
