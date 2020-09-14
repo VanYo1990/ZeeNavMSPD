@@ -160,6 +160,13 @@ Route::prefix('v1')
                 //用户获取某施工项目详情信息
                 Route::get('projectdetails/{sn}/{id}', 'ProjectsController@getProjectdetails')
                 ->name('projectdetails');
+                //用户获取自己所有设备的所有施工详情信息
+                Route::get('jobaccount/{id}/{day}', 'ProjectsController@getAllProjectdetails_User')
+                ->name('jobaccount');
+
+                //用户获取自己某台设备的施工记录统计信息
+                Route::get('jobaccountonemachine/{sn}/{day}', 'ProjectsController@getOneMachineWorkRecordsAccount_User')
+                ->name('jobaccount');
                 
             });
         });
