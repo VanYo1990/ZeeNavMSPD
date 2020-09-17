@@ -125,17 +125,22 @@ class ProjectsController extends Controller
             404);
         }
 
-        $machine = UserMachines::where('user_id', '=',  $user->id)->where('machine_sn', '=',  $sn)->first();
-        if($machine === null){
-            //没有记录
-            return response()->json([
-                'resultCode' => 101,
-                'resultMessage' => 'error message: 用户不存在该设备 error name',
-                'data' => []
-                ],
-                404);
+        //获取当前用户的权限，管理员和站长同样拥有权限
+        $permissions = $request->user()->getAllPermissions();
+        if($permissions->count() != 1 && $permissions->count() != 3){
+            //非管理员用户,检查用户是否拥有该设备
+            $machine = UserMachines::where('user_id', '=',  $user->id)->where('machine_sn', '=',  $sn)->first();
+            if($machine === null){
+                //没有记录
+                return response()->json([
+                    'resultCode' => 101,
+                    'resultMessage' => 'error message: 用户不存在该设备 error name',
+                    'data' => []
+                    ],
+                    404);
+            }
         }
-
+        
         $projects = Project::where('machine_sn', '=',  $sn)->get();
         if(!$projects){
             //没有记录
@@ -179,16 +184,22 @@ class ProjectsController extends Controller
             404);
         }
 
-        $machine = UserMachines::where('user_id', '=',  $user->id)->where('machine_sn', '=',  $sn)->first();
-        if($machine === null){
-            //没有记录
-            return response()->json([
-                'resultCode' => 101,
-                'resultMessage' => 'error message: 用户不存在该设备 error name',
-                'data' => []
-                ],
-                404);
+        //获取当前用户的权限，管理员和站长同样拥有权限
+        $permissions = $request->user()->getAllPermissions();
+        if($permissions->count() != 1 && $permissions->count() != 3){
+            //非管理员用户,检查用户是否拥有该设备
+            $machine = UserMachines::where('user_id', '=',  $user->id)->where('machine_sn', '=',  $sn)->first();
+            if($machine === null){
+                //没有记录
+                return response()->json([
+                    'resultCode' => 101,
+                    'resultMessage' => 'error message: 用户不存在该设备 error name',
+                    'data' => []
+                    ],
+                    404);
+            }
         }
+        
 
         $workRecords = WorkRecords::where('project_id', '=',  $id)->get();
         if(!$workRecords){
