@@ -74,6 +74,63 @@ class UsersController extends Controller
         return (new UserResource($user))->showSensitiveFields();
     }
 
+    //管理员修改用户密码
+    public function updatePassword(Request $request)
+    {
+        $user = $request->user();
+
+        //获取当前用户的权限，只有管理员和站长拥有权限
+        $permissions = $request->user()->getAllPermissions();
+        if($permissions->count() != 1 && $permissions->count() != 3){
+            return response()->json([
+                'resultCode' => 101,
+                'resultMessage' => 'no permission to operate',
+                'data' => []
+                ],
+            404);
+        }
+
+        $id = $request->id;
+
+        if ( !$request->id || !$request->password_new) {
+            return response()->json([
+                'resultCode' => 101,
+                'resultMessage' => '参数有误或缺少必要参数',
+                'data' => [
+                        'request' => $request
+                    ]
+                ],
+            404);
+        }
+
+        //判断用户是否存在
+        if (User::where('id', '=', $id)->exists() == FALSE) {
+            //没有记录
+            return response()->json([
+                'resultCode' => 101,
+                'resultMessage' => '设备不存在',
+                'data' => []
+                ],
+                404);
+        }
+
+        //获取当前id数据
+        $user_set = User::where('id', '=', $id)->first();
+
+        $user_set->password = \Hash::make($request->password_new);
+        
+        $user_set->update();
+
+        return response()->json([
+            'resultCode' => 201,
+            'resultMessage' => 'update password success',
+            'data' => [
+                'id' => $id
+            ]
+            
+        ])->setStatusCode(201);
+    }
+
     //小程序注册
     public function weappStore(UserRequest $request)
     {

@@ -124,6 +124,9 @@ Route::prefix('v1')
                 // 管理员删除用户
                 Route::delete('userdel/{id}', 'UsersController@destroy')
                 ->name('user.destroy');
+                // 管理员修改用户密码
+                Route::post('updateuserpswd', 'UsersController@updatePassword')
+                ->name('user.updatePassword');
 
                 // 管理员给指定用户添加机器
                 Route::post('usermachine', 'UserMachinesController@store')
@@ -145,8 +148,11 @@ Route::prefix('v1')
                 Route::post('machines', 'MachinesController@store')
                     ->name('machines.store');
                 // 管理员修改机器信息
-                Route::put('machines/{id}', 'MachinesController@update')
+                Route::post('updatemachineinfo', 'MachinesController@update')
                 ->name('machines.update');
+                // 管理员修改机器密码
+                Route::post('updatemachinepswd', 'MachinesController@updatePassword')
+                ->name('machines.updatePassword');
                 // 管理员删除指定机器信息
                 Route::delete('machines/{id}', 'MachinesController@destroy')
                 ->name('machines.destroy');
