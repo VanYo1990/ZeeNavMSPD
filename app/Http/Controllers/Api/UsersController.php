@@ -15,6 +15,8 @@ use App\Models\Machine;
 
 use DB;
 
+use Hash;
+
 
 class UsersController extends Controller
 {
@@ -108,7 +110,7 @@ class UsersController extends Controller
             //没有记录
             return response()->json([
                 'resultCode' => 101,
-                'resultMessage' => '设备不存在',
+                'resultMessage' => '用户不存在',
                 'data' => []
                 ],
                 404);
@@ -124,6 +126,62 @@ class UsersController extends Controller
         return response()->json([
             'resultCode' => 201,
             'resultMessage' => 'update password success',
+            'data' => [
+                'id' => $id
+            ]
+            
+        ])->setStatusCode(201);
+    }
+
+    //用户修改自己的密码
+    public function updateMyPassword(Request $request)
+    {
+        $user = $request->user();
+
+        $id = $user->id;
+
+        if ( !$request->password_old || !$request->password_new) {
+            return response()->json([
+                'resultCode' => 101,
+                'resultMessage' => '参数有误或缺少必要参数',
+                'data' => [
+                        'request' => $request
+                    ]
+                ],
+            404);
+        }
+
+        //判断用户是否存在
+        if (User::where('id', '=', $id)->exists() == FALSE) {
+            //没有记录
+            return response()->json([
+                'resultCode' => 101,
+                'resultMessage' => '用户不存在',
+                'data' => []
+                ],
+                404);
+        }
+
+        //获取当前id数据
+        $user_set = User::where('id', '=', $id)->first();
+
+        if (!Hash::check($request->password_old , $user_set['password'])){
+            //密码错误
+            return response()->json([
+                'resultCode' => 101,
+                'resultMessage' => 'error message: 密码错误',
+                'data' => []
+                ],
+                404);
+        }
+
+        $user_set->password = \Hash::make($request->password_new);
+        
+        $user_set->update();
+
+        return response()->json([
+            'resultCode' => 201,
+            'resultMessage' => 'update my password success',
             'data' => [
                 'id' => $id
             ]

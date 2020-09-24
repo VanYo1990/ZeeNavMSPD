@@ -173,6 +173,10 @@ Route::prefix('v1')
                 //用户获取自己某台设备的施工记录统计信息
                 Route::get('jobaccountonemachine/{sn}/{day}', 'ProjectsController@getOneMachineWorkRecordsAccount_User')
                 ->name('jobaccount');
+
+                 //用户修改自己的密码
+                 Route::post('updatemypwd', 'UsersController@updateMyPassword')
+                 ->name('updatemypwd');
                 
             });
         });

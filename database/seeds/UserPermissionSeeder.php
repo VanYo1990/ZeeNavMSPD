@@ -21,5 +21,6 @@ class UserPermissionSeeder extends Seeder
         // 将 2 号用户指派为『管理员』
         $user = User::find(4);
         $user->assignRole('Maintainer');
+        //$user->removeRole('Maintainer');    //移除权限
     }
 }
