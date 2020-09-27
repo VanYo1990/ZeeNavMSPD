@@ -82,6 +82,17 @@ class WorkRecordsController extends Controller
                 404);
         }
 
+        $content_get = json_decode($request->content);
+
+        if (!$content_get->stop_at) {
+            return response()->json([
+                'resultCode' => 101,
+                'resultMessage' => 'error message: 施工信息内容错误',
+                'data' => []
+                ],
+            404);
+        }
+
         $workrecord = WorkRecords::where('machine_sn', '=',  $sn)
                                 ->where('project_id', '=',  $request->project_id)
                                 ->where('pile_name', '=',  $request->pile_name)
@@ -94,6 +105,8 @@ class WorkRecordsController extends Controller
 
             $attributes['content'] = $request->content;
 
+            $attributes['updated_at'] = $content_get->stop_at;
+
             $workrecord->update($attributes);
         }
         else{
@@ -105,6 +118,7 @@ class WorkRecordsController extends Controller
                 'project_id' => $request->project_id,
                 'pile_name' => $request->pile_name,
                 'content' => $request->content,
+                'updated_at' => $content_get->stop_at
             ]);
         }
         
