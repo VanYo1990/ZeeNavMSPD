@@ -200,8 +200,8 @@ class ProjectsController extends Controller
             }
         }
         
-
-        $workRecords = WorkRecords::where('project_id', '=',  $id)->get();
+        //laravel 的 Eloquent ORM 查询 条件按某个字段排序 降序，orderBy('updated_at','desc')，https://segmentfault.com/q/1010000002964560
+        $workRecords = WorkRecords::where('project_id', '=',  $id)->orderBy('updated_at','desc')->get();
         if(!$workRecords){
             //没有记录
             return response()->json([
