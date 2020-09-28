@@ -286,19 +286,33 @@ class ProjectsController extends Controller
         //         ->get();
         // }
 
-        //laravel where中多条件查询
-        //https://www.cnblogs.com/mitang/p/4928059.html
+        // //laravel where中多条件查询
+        // //https://www.cnblogs.com/mitang/p/4928059.html
+        // $where = [];
+        // foreach ($machines as $machine) {
+        //     $where[] = array('machine_sn', '=', $machine->machine_sn);   // 关键是这里
+        // }
+
+        // $data = workRecords::where('updated_at','<', Carbon::now())
+        //         ->where('updated_at','>', $time > 1 ? Carbon::today()->subDays($time) : Carbon::today())
+        //         ->orwhere($where)
+        //         ->select([$time > 1 ? DB::raw('DATE(updated_at) as time') : DB::raw('DATE_FORMAT(updated_at,\'%H\') as time'), DB::raw('COUNT("*") as count')])
+        //         ->groupBy('time')
+        //         ->get();    
+
+        //Laravel 的 where or 查询
+        //https://learnku.com/articles/36743
         $where = [];
         foreach ($machines as $machine) {
-            $where[] = array('machine_sn', '=', $machine->machine_sn);   // 关键是这里
+            $where[] = ['machine_sn', '=', $machine->machine_sn, 'OR']; 
         }
 
         $data = workRecords::where('updated_at','<', Carbon::now())
                 ->where('updated_at','>', $time > 1 ? Carbon::today()->subDays($time) : Carbon::today())
-                ->orwhere($where)
+                ->where($where)
                 ->select([$time > 1 ? DB::raw('DATE(updated_at) as time') : DB::raw('DATE_FORMAT(updated_at,\'%H\') as time'), DB::raw('COUNT("*") as count')])
                 ->groupBy('time')
-                ->get();    
+                ->get();   
 
         return response()->json([
             'resultCode' => 201,
@@ -347,12 +361,12 @@ class ProjectsController extends Controller
             404);
         }
 
-        $machines = UserMachines::where('user_id', '=',  $user->id)->get();
+        $machines = UserMachines::where('user_id', '=',  $user->id)->where('machine_sn', '=',  $sn)->get();
         if($machines === null){
             //没有记录
             return response()->json([
                 'resultCode' => 101,
-                'resultMessage' => 'error message: 用户不存在设备 error name',
+                'resultMessage' => 'error message: 用户不存在该设备 error name',
                 'data' => []
                 ],
                 404);
@@ -380,14 +394,12 @@ class ProjectsController extends Controller
         }
 
         $time = (int)$day;
-        foreach ($machines as $machine) {
-            $data = workRecords::where('updated_at','<', Carbon::now())
+        $data = workRecords::where('updated_at','<', Carbon::now())
                 ->where('updated_at','>', $time > 1 ? Carbon::today()->subDays($time) : Carbon::today())
                 ->where('machine_sn','=',$sn)
                 ->select([$time > 1 ? DB::raw('DATE(updated_at) as time') : DB::raw('DATE_FORMAT(updated_at,\'%H\') as time'), DB::raw('COUNT("*") as count')])
                 ->groupBy('time')
                 ->get();
-        }
         
 
         return response()->json([
