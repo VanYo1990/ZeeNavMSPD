@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Models\Machine;
 use Hash;
 
+use App\Models\UserMachines;
+
 class MachinesController extends Controller
 {
     //添加新设备
@@ -257,10 +259,10 @@ class MachinesController extends Controller
         $permissions = $request->user()->getAllPermissions();
         if($permissions->count() != 1 && $permissions->count() != 3){
             return response()->json([
-                'error' => [
-                    'message' => 'no permission to operate', 
-                    'type' => 'Exception',
-                    'code' => ''
+                    'resultCode' => 201,
+                    'resultMessage' => 'no permission to operate',
+                    'data' => [
+                       
                     ]
                 ],
             404);
@@ -271,22 +273,29 @@ class MachinesController extends Controller
         if ($machine === null){
             //存在相同记录
             return response()->json([
-                'error' => [
-                    'message' => '设备不存在', 
-                    'type' => 'Exception',
-                    'code' => ''
+                    'resultCode' => 201,
+                    'resultMessage' => '设备不存在',
+                    'data' => [
+                    
                     ]
                 ],
             404);
         }
-
 
         $machine->delete();
 
         // deleted来记录删除了多少条数据
         $deleted = UserMachines::where('machine_sn','=',$machine->sn)->delete();
 
-        return response(null, 204);
+        return response()->json([
+            'resultCode' => 201,
+            'resultMessage' => '删除设备成功',
+            'data' => [
+                'count' => $deleted
+            ]
+            
+        ])->setStatusCode(201);
+
     }
 
     public function queryMachinesAll(Request $request){
